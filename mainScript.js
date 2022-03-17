@@ -20,6 +20,7 @@ tooltipTriggerList.map(function (tooltipTriggerEl) {
 
 let startIsDefined = false;
 let targetIsDefined = false;
+let clickedDown = false;
 let currentNode;
 let startingNode;
 let targetNode;
@@ -59,10 +60,6 @@ const fillObstacles = () => {
   });
 };
 
-function printss() {
-  console.log('exported');
-}
-
 function calculateDistance(node1, node2) {
   let x = (node1.x - node2.x) ** 2;
   let y = (node1.y - node2.y) ** 2;
@@ -79,13 +76,13 @@ function findNextNode(openset, grid) {
       smallestCost = cell.fCost;
       validNodeCoord = value;
     }
-    // if (
-    //   cell.fCost === smallestCost &&
-    //   cell.gCost < grid[validNodeCoord.x][validNodeCoord.y].gCost
-    // ) {
-    //   //smallestCost = cell.fCost;
-    //   validNodeCoord = value;
-    // } else return;
+    if (
+      cell.fCost === smallestCost &&
+      cell.gCost < grid[validNodeCoord.x][validNodeCoord.y].gCost
+    ) {
+      //smallestCost = cell.fCost;
+      validNodeCoord = value;
+    } else return;
   });
   return validNodeCoord;
 }
@@ -132,7 +129,7 @@ allresetButton.onclick = () => {
   grid[targetNode.x][targetNode.y] = undefined;
   startingNode = undefined;
   targetNode = undefined;
-  let drawingObstacles = false;
+  //drawingObstacles = false;
   openSet = [];
   closedSet = [];
   pathCoords = [];
@@ -140,6 +137,7 @@ allresetButton.onclick = () => {
   evaluatedNodeCoords = [];
   clearGrids(true, false);
   allresetButton.disabled = true;
+  resetButton.disabled = true;
 };
 
 const drawObstacleButton = document.getElementById('obstacleControl');
@@ -158,6 +156,9 @@ drawObstacleButton.onclick = () => {
   drawObstacleButton.classList.toggle('button-toggle');
   document.getElementById('spinner').classList.toggle('spinner-grow');
   document.getElementById('spinner').classList.toggle('spinner-grow-sm');
+  if (drawingObstacles)
+    document.getElementById('ObsState').innerHTML = 'Drawing Obstacle';
+  else document.getElementById('ObsState').innerHTML = 'Draw Obstacle';
 };
 
 class Node {
@@ -333,10 +334,12 @@ const getMousePos = (canvas, e) => {
 };
 canvas.addEventListener('mouseup', () => {
   recMouseCoord = false;
+  clickedDown = false;
 });
 canvas.addEventListener('mousedown', (e) => {
+  clickedDown = true;
   recMouseCoord = true;
-  if (drawingObstacles) {
+  if (drawingObstacles && clickedDown) {
     const mousePos = getMousePos(canvas, e);
     varData.mouseCoord = mousePos;
     const gCoord = coordToGrid(varData.mouseCoord);
@@ -411,19 +414,18 @@ canvas.addEventListener('mousedown', (e) => {
       const maininterval = setInterval(mainfunction, 8);
     }
   }
-  if (drawingObstacles) {
-    canvas.addEventListener('mousemove', (e) => {
-      if (recMouseCoord) {
-        const mousePos = getMousePos(canvas, e);
-        varData.mouseCoord = mousePos;
 
-        const gCoord = coordToGrid(varData.mouseCoord);
-        if (grid[gCoord.x][gCoord.y] === undefined) {
-          grid[gCoord.x][gCoord.y] = new Node(gCoord, 0);
-          grid[gCoord.x][gCoord.y].fillAs(color.obstacle);
-          obstacleSet.push(grid[gCoord.x][gCoord.y]);
-        }
+  canvas.addEventListener('mousemove', (e) => {
+    if (recMouseCoord && drawingObstacles && clickedDown) {
+      const mousePos = getMousePos(canvas, e);
+      varData.mouseCoord = mousePos;
+
+      const gCoord = coordToGrid(varData.mouseCoord);
+      if (grid[gCoord.x][gCoord.y] === undefined) {
+        grid[gCoord.x][gCoord.y] = new Node(gCoord, 0);
+        grid[gCoord.x][gCoord.y].fillAs(color.obstacle);
+        obstacleSet.push(grid[gCoord.x][gCoord.y]);
       }
-    });
-  }
+    }
+  });
 });
