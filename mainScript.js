@@ -102,7 +102,7 @@ const resetEvaluatedNodes = () => {
 const resetNodes = () => {
   startIsDefined = false;
   targetIsDefined = false;
-  clearGrids();
+  clearGrids(true, false);
   fillObstacles();
   startingNode.fillAs(color.bland);
   targetNode.fillAs(color.targetLight);
@@ -124,16 +124,21 @@ resetButton.onclick = () => {
 allresetButton.onclick = () => {
   startIsDefined = false;
   targetIsDefined = false;
-  clearGrids(true);
+  obstacleSet.forEach((value) => {
+    grid[value.x][value.y] = undefined;
+  });
   resetEvaluatedNodes();
   grid[startingNode.x][startingNode.y] = undefined;
   grid[targetNode.x][targetNode.y] = undefined;
   startingNode = undefined;
   targetNode = undefined;
+  let drawingObstacles = false;
   openSet = [];
   closedSet = [];
   pathCoords = [];
+  obstacleSet = [];
   evaluatedNodeCoords = [];
+  clearGrids(true, false);
   allresetButton.disabled = true;
 };
 
@@ -267,14 +272,14 @@ const drawGrids = () => {
     }
   }
 };
-const clearGrids = (fullerase = false) => {
+const clearGrids = (fullerase = false, fillObs = true) => {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawGrids();
   if (!fullerase) {
     startingNode.fillAs(color.start);
     targetNode.fillAs(color.target);
   }
-  fillObstacles();
+  if (fillObs) fillObstacles();
 };
 
 drawGrids();
