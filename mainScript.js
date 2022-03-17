@@ -101,6 +101,7 @@ const resetNodes = () => {
   targetIsDefined = false;
   clearGrids(true, false);
   fillObstacles();
+  allresetButton.disabled = true;
   startingNode.fillAs(color.bland);
   targetNode.fillAs(color.targetLight);
   grid[startingNode.x][startingNode.y] = undefined;
