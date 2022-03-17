@@ -1,0 +1,117 @@
+#maingrid {
+  display: block;
+  border: 1px solid #208c7d;
+  background-color: white;
+  margin: 0 auto;
+}
+.controlers {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 20px;
+}
+.button {
+  display: block;
+  margin: 1rem 1rem;
+  background-color: #9f42dd;
+  color: white;
+  border: 0px;
+  padding: 0.6rem;
+  border-radius: 0.4rem;
+  filter: blur();
+}
+.btn-reset {
+  display: block;
+  margin: 1rem 1rem;
+  background-color: #9f42dd;
+  color: white;
+  border: 0px;
+  padding: 0.6rem;
+  border-radius: 0.4rem;
+}
+.btn-reset:disabled {
+  background-color: #e1b7fd;
+  color: white;
+}
+.btn-allreset {
+  display: block;
+  margin: 1rem 1rem;
+  background-color: red;
+  color: white;
+  border: 0px;
+  padding: 0.6rem;
+  border-radius: 0.4rem;
+}
+.btn-allreset:disabled {
+  background-color: rgb(255, 115, 115);
+  color: white;
+}
+.button:active {
+  opacity: 0.8;
+  border: 0.1rem outset rgb(197, 152, 255);
+  border-style: outset;
+}
+.button-toggle {
+  background-color: #0e0054;
+  border: 0.2rem solid rgb(12, 8, 51);
+  border-style: double;
+}
+.slider {
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(36px);
+}
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
