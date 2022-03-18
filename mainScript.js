@@ -30,6 +30,7 @@ let closedSet = [];
 let pathCoords = [];
 let obstacleSet = [];
 let evaluatedNodeCoords = [];
+let allCosts = [];
 let recMouseCoord = true;
 let drawingObstacles = false;
 const varData = {
@@ -60,14 +61,14 @@ const fillObstacles = () => {
   });
 };
 
-function calculateDistance(node1, node2) {
+const calculateDistance = (node1, node2) => {
   let x = (node1.x - node2.x) ** 2;
   let y = (node1.y - node2.y) ** 2;
   let gCost = Math.round(Math.sqrt(x + y) * 10);
   return gCost;
-}
+};
 
-function findNextNode(openset, grid) {
+const findNextNode = (openset, grid) => {
   let smallestCost = Infinity;
   let validNodeCoord = '';
   openset.forEach((value) => {
@@ -85,11 +86,20 @@ function findNextNode(openset, grid) {
     } else return;
   });
   return validNodeCoord;
-}
+};
 
-function clamp(min, max, inpValue) {
+const clamp = (min, max, inpValue) => {
   return Math.max(min, Math.min(inpValue, max));
-}
+};
+
+const counter = document.getElementById('cost');
+const travelCost = () => {
+  const travel1 =
+    grid[targetNode.parentNodeCoord.x][targetNode.parentNodeCoord.y];
+
+  const travel2 = calculateDistance(travel1, targetNode);
+  return Math.round(travel1.gCost / gCostMultiplier + travel2);
+};
 
 const resetEvaluatedNodes = () => {
   evaluatedNodeCoords.forEach((value) => {
@@ -102,6 +112,7 @@ const resetNodes = () => {
   clearGrids(true, false);
   fillObstacles();
   allresetButton.disabled = true;
+  document.getElementById('cost').innerText = '0';
   startingNode.fillAs(color.bland);
   targetNode.fillAs(color.targetLight);
   grid[startingNode.x][startingNode.y] = undefined;
@@ -137,6 +148,7 @@ allresetButton.onclick = () => {
   obstacleSet = [];
   evaluatedNodeCoords = [];
   clearGrids(true, false);
+  document.getElementById('cost').innerText = '0';
   allresetButton.disabled = true;
   resetButton.disabled = true;
 };
@@ -158,7 +170,7 @@ drawObstacleButton.onclick = () => {
   document.getElementById('spinner').classList.toggle('spinner-grow');
   document.getElementById('spinner').classList.toggle('spinner-grow-sm');
   if (drawingObstacles)
-    document.getElementById('ObsState').innerHTML = 'Drawing Obstacle';
+    document.getElementById('ObsState').innerHTML = 'Stop Drawing';
   else document.getElementById('ObsState').innerHTML = 'Draw Obstacle';
 };
 
@@ -240,6 +252,9 @@ class Node {
         }
       } else if (grid[values.x][values.y] === targetNode) {
         currentNode = targetNode;
+        targetNode.gCost =
+          this.gCost +
+          calculateDistance(this.gridValues, values) * gCostMultiplier;
         targetNode.parentNodeCoord = this.gridValues;
       }
     });
@@ -317,6 +332,7 @@ const drawPathLine = () => {
     ctx.beginPath();
     ctx.arc(newX, newY, 5, 0, 2 * Math.PI);
     ctx.fill();
+    counter.innerText = Math.round(allCosts[i - 1] / gCostMultiplier);
 
     if (i > coords.length - 1) {
       clearInterval(lineInterval);
@@ -392,6 +408,7 @@ canvas.addEventListener('mousedown', (e) => {
           let currentparent = targetNode;
           while (true) {
             pathCoords.push(currentparent.startCoord);
+            allCosts.push(currentparent.gCost);
             if (currentparent != targetNode) currentparent.fillAs(color.path);
             currentparent =
               grid[currentparent.parentNodeCoord.x][
@@ -399,15 +416,16 @@ canvas.addEventListener('mousedown', (e) => {
               ];
             if (currentparent.gridValues === startingNode.gridValues) {
               pathCoords.push(currentparent.startCoord);
+              allCosts.push(currentparent.gCost);
+              allCosts.reverse();
               pathCoords.reverse();
-
               break;
             }
           }
           setTimeout(() => {
             clearGrids();
-            resetEvaluatedNodes();
             drawPathLine();
+            resetEvaluatedNodes();
           }, 700);
         }
       };
