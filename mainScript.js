@@ -158,10 +158,10 @@ const accuracyToggle = document.getElementById('accuracy');
 accuracyToggle.oninput = () => {
   if (accuracyToggle.checked) {
     gCostMultiplier = 1.5;
-    fCostMultiplier = 0.75;
+    fCostMultiplier = 1;
   } else {
-    gCostMultiplier = 1;
-    fCostMultiplier = 1.1;
+    gCostMultiplier = 1.1;
+    fCostMultiplier = 1;
   }
 };
 drawObstacleButton.onclick = () => {
