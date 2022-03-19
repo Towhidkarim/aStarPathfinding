@@ -430,7 +430,7 @@ canvas.addEventListener('mousedown', (e) => {
         }
       };
 
-      const maininterval = setInterval(mainfunction, 8);
+      const maininterval = setInterval(mainfunction, 3);
     }
   }
 
